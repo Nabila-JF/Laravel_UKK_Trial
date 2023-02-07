@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\MejaController;
 use App\Http\Controllers\LogoutController;
 
 /*
@@ -32,6 +33,11 @@ Route::group(['middleware' => ['jwt.verify:admin']],function(){
     Route::put('/edit_user/{id}', [UserController::class, 'edit']);
     Route::delete('/delete_user/{id}', [UserController::class, 'delete']);
 
+    // Meja Group
+    Route::get('/data_meja',[MejaController::class, 'get']);
+    Route::post('/create_meja', [MejaController::class, 'create']);
+    Route::put('/edit_meja/{id}', [MejaController::class, 'update']);
+    Route::delete('/delete_meja/{id}', [MejaController::class, 'delete']);
 });
 
 // Kasir
