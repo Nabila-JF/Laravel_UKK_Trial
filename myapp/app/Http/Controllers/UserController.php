@@ -12,6 +12,7 @@ use Tymon\JWTAuth\Exceptions\JWTException;
 
 class UserController extends Controller
 {
+    // Login Methods
     public function login(Request $request)
     {
         $credentials = $request->only('username', 'password');
@@ -25,6 +26,7 @@ class UserController extends Controller
         return response()->json(compact('token'));
     }
 
+    // Register User Methods
     public function register(Request $request)
     {
         $validator = Validator::make($request->all(), [
@@ -46,6 +48,64 @@ class UserController extends Controller
         return response()->json(compact('user','token'),201);
     }
 
+    // Edit User Methods
+    public function edit(Request $request, $id)
+        {
+            $validator = Validator::make($request->all(),[
+                'name' => 'string|max:255',
+                'username' => 'string|max:255|unique:users',
+                'role' => '',
+                'password' => 'string|min:6',
+            ]);
+
+            if($validator->fails()){
+                return response()->json($validator->errors()->toJson(), 400);
+            }
+
+            $ubah = User::where('id',$id)->update([
+                'name' => $request->get('name'),
+                'username' => $request->get('username'),
+                'role' => $request->get('role'),
+                'password' => Hash::make($request->get('password')),
+            ]);
+
+            if($ubah){
+                return response()->json(['status'=>true, 'message' =>'Sukses Mengubah User']);
+            } else {
+                return response()->json(['status'=>false, 'message' =>'Gagal Mengubah User']);
+            }
+        }
+
+    // Edit User Methods Ver. 02
+    public function edit2(Request $request, $id)
+    {
+               
+            $edit_user = User::find($id);
+            $edit_user->name = $request->name;
+            $edit_user->username = $request->username;
+            $edit_user->password = $request->password;
+            $edit_user->role = $request->role;
+            $edit_user->save();
+            
+
+            if($ubah){
+                return response()->json(['status'=>true, 'message' =>'Sukses Mengubah User']);
+            } else {
+                return response()->json(['status'=>false, 'message' =>'Gagal Mengubah User']);
+            }
+        }
+
+    // Delete User Methods
+    public function delete($id)
+        {
+            $hapus=User::where('id',$id)->delete();
+            if($hapus){
+                return Response()->json(['status'=>true, 'message' =>'Sukses Hapus Users']);
+            } else {
+                return Response()->json(['status'=>false, 'message' =>'Gagal Hapus Users']);
+            }
+        }
+
     public function getAuthenticatedUser()
     {
         try {
@@ -61,26 +121,62 @@ class UserController extends Controller
         }
         return response()->json(compact('user'));
     }
+
+    // Info ID Admin Methods
     public function profile_admin() {
         return response()->json(JWTAuth::user());
     }
+
+    // Info ID Kasir Methods
     public function profile_kasir() {
         return response()->json(JWTAuth::user());
     }
+
+    // Info ID Manager Methods
     public function profile_manager() {
         return response()->json(JWTAuth::user());
     }
 
+    // Logout Methods
     public function logout() {
         auth()->logout();
         $token = JWTAuth::getToken();
-if ($token) {
-    JWTAuth::setToken($token)->invalidate();
-}
-
+    if ($token) {
+        JWTAuth::setToken($token)->invalidate();
+    }
         return response()->json([
             'status' => 'success',
             'message' => 'logout'
         ], 200);
     }
 }
+
+
+            // $user = User::find($id);
+            // // Name
+            // if($name != null){
+            //     $user->name = $name;
+            // } else {
+            //     $user->getOriginal('name');
+            // }
+            // // Username
+            // if($username != null){
+            //     $user->username = $username;
+            // } else {
+            //     $user->getOriginal('username');
+            // }
+            // // Role
+            // if($role != null){
+            //     $user->role = $role;
+            // } else {
+            //     $user->getOriginal('role');
+            // }
+            // // Foto Produk
+            // if($password != null){
+            //     $user->password = $password;
+            // } else {
+            //     $user->getOriginal('password');
+            // }
+
+            // $user->update_at = $update_at;
+            // $user->save();

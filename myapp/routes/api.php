@@ -20,13 +20,18 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::post('/register', [UserController::class, 'register']);
 Route::post('/login', [UserController::class, 'login']);
 Route::post('/logout', [UserController::class, 'logout']);
 
 // Admin
 Route::group(['middleware' => ['jwt.verify:admin']],function(){
+
+    // User Group
     Route::get('/profile_admin',[UserController::class, 'profile_admin']);
+    Route::post('/register', [UserController::class, 'register']);
+    Route::put('/edit_user/{id}', [UserController::class, 'edit']);
+    Route::delete('/delete_user/{id}', [UserController::class, 'delete']);
+
 });
 
 // Kasir
