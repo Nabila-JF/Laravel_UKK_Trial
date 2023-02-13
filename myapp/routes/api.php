@@ -4,6 +4,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\MejaController;
+use App\Http\Controllers\MenuController;
 use App\Http\Controllers\LogoutController;
 
 /*
@@ -26,26 +27,31 @@ Route::post('/logout', [UserController::class, 'logout']);
 
 // Admin
 Route::group(['middleware' => ['jwt.verify:admin']],function(){
-
+    
     // User Group
-    Route::get('/profile_admin',[UserController::class, 'profile_admin']);
-    Route::post('/register', [UserController::class, 'register']);
-    Route::put('/edit_user/{id}', [UserController::class, 'edit']);
-    Route::delete('/delete_user/{id}', [UserController::class, 'delete']);
+    Route::get('/profile',[UserController::class, 'profile_admin']);
+    Route::post('/user', [UserController::class, 'register']);
+    Route::get('/user',[UserController::class, 'get']);
+    Route::put('/user/{id}', [UserController::class, 'edit']);
+    Route::delete('/user/{id}', [UserController::class, 'delete']);
 
     // Meja Group
-    Route::get('/data_meja',[MejaController::class, 'get']);
-    Route::post('/create_meja', [MejaController::class, 'create']);
-    Route::put('/edit_meja/{id}', [MejaController::class, 'update']);
-    Route::delete('/delete_meja/{id}', [MejaController::class, 'delete']);
+    Route::get('/meja',[MejaController::class, 'get']);
+    Route::post('/meja', [MejaController::class, 'create']);
+    Route::put('/meja/{id}', [MejaController::class, 'update']);
+    Route::delete('/meja/{id}', [MejaController::class, 'delete']);
+
+    // Menu Group
+    Route::get('/menu',[MenuController::class, 'get']);
+    Route::post('/menu', [MenuController::class, 'create']);
 });
 
 // Kasir
 Route::group(['middleware' => ['jwt.verify:kasir']],function(){
-    Route::get('/profile_kasir',[UserController::class, 'profile_kasir']);
+    Route::get('/profile',[UserController::class, 'profile_kasir']);
 });
 
 // Manager
 Route::group(['middleware' => ['jwt.verify:manager']],function(){
-    Route::get('/profile_manager',[UserController::class, 'profile_manager']);
+    Route::get('/profile',[UserController::class, 'profile_manager']);
 });

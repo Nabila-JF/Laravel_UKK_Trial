@@ -31,7 +31,7 @@ class UserController extends Controller
     {
         $validator = Validator::make($request->all(), [
             'name' => 'required|string|max:255',
-            'username' => 'required|string|max:255|unique:users, username',
+            'username' => 'required|string|max:255|unique:users',
             'role' => 'required',
             'password' => 'required|string|min:6',
         ]);
@@ -52,10 +52,9 @@ class UserController extends Controller
     public function edit(Request $request, $id)
         {
             $validator = Validator::make($request->all(),[
-                'name' => 'string|max:255',
-                'username' => 'string|max:255|unique:users, username',
-                'role' => '',
-                'password' => 'string|min:6',
+                'name' => 'required|string|max:255',
+                'role' => 'required|string',
+                'password' => 'required|string|min:6',
             ]);
 
             if($validator->fails()){
@@ -64,7 +63,6 @@ class UserController extends Controller
 
             $ubah = User::where('id',$id)->update([
                 'name' => $request->get('name'),
-                'username' => $request->get('username'),
                 'role' => $request->get('role'),
                 'password' => Hash::make($request->get('password')),
             ]);
@@ -149,7 +147,16 @@ class UserController extends Controller
             'message' => 'logout'
         ], 200);
     }
+
+    // Get Data
+    public function get()
+    {
+        $dt_user=User::get();
+        return response()->json($dt_user);
+    }
+
 }
+
 
 
             // $user = User::find($id);

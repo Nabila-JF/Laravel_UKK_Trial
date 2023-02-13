@@ -29,6 +29,6 @@ class JwtMiddleware extends BaseMiddleware
         if($user && in_array($user->role, $roles)){
             return $next($request);
         }
-        return response()->jsoon(['status'=>'You are unauthorized user']);
+        return response()->json(['status'=>'You are unauthorized user']);
     }
 }
